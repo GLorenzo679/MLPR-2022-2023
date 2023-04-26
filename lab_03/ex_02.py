@@ -59,12 +59,10 @@ def plot_scatter(matrix, label):
 
 
 def SbSw(D, L):
-
     SW = 0
     SB = 0
 
     # calculate mean of all dataset
-    #mean = D.mean(1).reshape(D.shape[0], 1)
     mean = vcol(D.mean(1))
 
     for i in range(3):
