@@ -80,12 +80,11 @@ def classifier(D, mean_array, cov_array, prior):
 
     # compute the joint distribution (each row of S_matrix (class-conditional probability) * each prior probability)
     S_joint = S_matrix * prior
-
     joint_sol = np.load(os.getcwd() + "/lab_05/data/SJoint_MVG.npy")
     print(f"Joint densities error (sol - mine): {np.abs(joint_sol - S_joint).max()}\n") 
     
-
     S_marginal = vrow(S_joint.sum(0))
+
     # compute posterior probability (joint probability / marginal densities)
     S_post = S_matrix / S_marginal
     posterior_sol = np.load(os.getcwd() + "/lab_05/data/Posterior_MVG.npy")
@@ -103,10 +102,6 @@ def log_classifier(D, mean_array, cov_array, prior):
     log_S_Joint_sol = np.load(os.getcwd() + "/lab_05/data/logSJoint_MVG.npy")
     print(f"Log joint density error (sol - mine): {np.abs(log_S_Joint_sol - log_S_Joint).max()}\n") 
 
-    #joint_sol = np.load(os.getcwd() + "/lab_05/data/SJoint_MVG.npy")
-    #print(f"Joint densities error (mine - sol): {np.abs(log_S_Joint - joint_sol).max()}\n") 
-    
-
     log_S_marginal = vrow(scipy.special.logsumexp(log_S_Joint, axis=0))
     log_marginal_sol = np.load(os.getcwd() + "/lab_05/data/logPosterior_MVG.npy")
     print(f"Log arginal density error (sol - mine): {np.abs(log_marginal_sol - log_S_marginal).max()}\n") 
@@ -122,6 +117,7 @@ def log_classifier(D, mean_array, cov_array, prior):
 def evaluate_classifier(predictions, labels):
     # compute boolean array, true if prediction == eval label else false
     matched = np.array([True if x1 == x2 else False for x1, x2 in zip(predictions, labels)])
+    
     # sum totale number of True (correct predictions) and divide by number of samples
     accuracy = matched.sum() / predictions.size
     error_rate = 1 - accuracy
