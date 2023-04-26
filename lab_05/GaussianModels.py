@@ -74,7 +74,7 @@ def score_matrix(DTV, mean_array, cov_array):
     return np.vstack(S)
 
 
-def classifier(D, mean_array, cov_array, prior):
+def MVG_classifier(D, mean_array, cov_array, prior):
     # compute score matrix for each sample of each class
     S_matrix = score_matrix(D, mean_array, cov_array)
 
@@ -93,22 +93,22 @@ def classifier(D, mean_array, cov_array, prior):
     return S_post
 
 
-def log_classifier(D, mean_array, cov_array, prior):
+def MVG_log_classifier(D, mean_array, cov_array, prior):
     # compute log score matrix for each sample of each class
     log_S_matrix = np.log(score_matrix(D, mean_array, cov_array))
 
     # compute the log joint distribution (each row of S_matrix (class-conditional probability) * each prior probability)
-    log_S_Joint = log_S_matrix * prior
+    log_S_Joint = log_S_matrix + np.log(prior)
     log_S_Joint_sol = np.load(os.getcwd() + "/lab_05/data/logSJoint_MVG.npy")
     print(f"Log joint density error (sol - mine): {np.abs(log_S_Joint_sol - log_S_Joint).max()}\n") 
 
     log_S_marginal = vrow(scipy.special.logsumexp(log_S_Joint, axis=0))
-    log_marginal_sol = np.load(os.getcwd() + "/lab_05/data/logPosterior_MVG.npy")
-    print(f"Log arginal density error (sol - mine): {np.abs(log_marginal_sol - log_S_marginal).max()}\n") 
+    log_marginal_sol = np.load(os.getcwd() + "/lab_05/data/logMarginal_MVG.npy")
+    print(f"Log marginal density error (sol - mine): {np.abs(log_marginal_sol - log_S_marginal).max()}\n") 
 
     # compute posterior probability (log joint probability - log marginal densities)
     log_S_post = log_S_Joint - log_S_marginal
-    log_posterior_sol = np.load(os.getcwd() + "/lab_05/data/logMarginal_MVG.npy")
+    log_posterior_sol = np.load(os.getcwd() + "/lab_05/data/logPosterior_MVG.npy")
     print(f"Log posterior probability error (sol - mine): {np.abs(log_posterior_sol - log_S_post).max()}\n") 
 
     return np.exp(log_S_post)
@@ -138,7 +138,7 @@ def main():
     # --- classification ---
     prior = np.ones((3,1)) / 3
     # compute posterior probabilities for samples
-    S_post = classifier(DTE, mean_array, cov_array, prior)
+    S_post = MVG_classifier(DTE, mean_array, cov_array, prior)
 
     # compute index of the row where prediction is maximum (each column is a sample)
     predictions = np.argmax(S_post, 0)
@@ -149,7 +149,7 @@ def main():
     print(f"Gaussian model error rate: {error_rate:.2f}\n")
 
     # compute posterior probabilities for samples
-    S_post = log_classifier(DTE, mean_array, cov_array, prior)
+    S_post = MVG_log_classifier(DTE, mean_array, cov_array, prior)
 
     predictions = np.argmax(S_post, 0)
     # evaluate log gaussian classifier
