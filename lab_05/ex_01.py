@@ -93,6 +93,7 @@ def classifier(D, mean_array, cov_array, prior):
 
     return S_post
 
+
 def log_classifier(D, mean_array, cov_array, prior):
     # compute log score matrix for each sample of each class
     log_S_matrix = np.log(score_matrix(D, mean_array, cov_array))
