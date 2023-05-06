@@ -35,3 +35,35 @@ def split_db_2to1(D, L, seed=0):
     LTE = L[idxTest]
 
     return (DTR, LTR), (DTE, LTE)
+
+
+def evaluate_classifier(predictions, labels):
+    # compute boolean array, true if prediction == eval label else false
+    matched = np.array([True if x1 == x2 else False for x1, x2 in zip(predictions, labels)])
+
+    # sum totale number of True (correct predictions) and divide by number of samples
+    accuracy = matched.sum() / predictions.size
+    error_rate = 1.0 - accuracy
+
+    return 100 * accuracy, 100 * error_rate
+
+
+def logpdf_GAU_ND_fast(X, mu, C):
+    XC = X - mu
+    M = X.shape[0]
+    const = -0.5 * M * np.log(2 * np.pi)
+    logdet = np.linalg.slogdet(C)[1]
+    L = np.linalg.inv(C)
+    v = (XC * np.dot(L, XC)).sum(0)
+
+    return const - 0.5 * logdet - 0.5 * v
+
+
+def score_matrix(DTV, mean_array, cov_array):
+    S = []
+
+    for i in range(3):
+        fcond = np.exp(logpdf_GAU_ND_fast(DTV, mean_array[i], cov_array[i]))
+        S.append(vrow(fcond))
+
+    return np.vstack(S)

@@ -2,7 +2,15 @@ import os
 
 import numpy as np
 import scipy
-from utils import load_iris, split_db_2to1, vrow
+from utils import (
+    evaluate_classifier,
+    load_iris,
+    logpdf_GAU_ND_fast,
+    split_db_2to1,
+    vrow,
+)
+
+PATH = os.path.abspath(os.path.dirname(__file__))
 
 
 def mean_cov_estimate(D, L):
@@ -25,17 +33,6 @@ def mean_cov_estimate(D, L):
     return np.array(mean_array), np.array(cov_array)
 
 
-def logpdf_GAU_ND_fast(X, mu, C):
-    XC = X - mu
-    M = X.shape[0]
-    const = -0.5 * M * np.log(2 * np.pi)
-    logdet = np.linalg.slogdet(C)[1]
-    L = np.linalg.inv(C)
-    v = (XC * np.dot(L, XC)).sum(0)
-
-    return const - 0.5 * logdet - 0.5 * v
-
-
 def score_matrix(DTV, mean_array, cov_array):
     S = []
 
@@ -52,15 +49,16 @@ def naive_MVG_classifier(D, mean_array, cov_array, prior):
 
     # compute the joint distribution (each row of S_matrix (class-conditional probability) * each prior probability)
     S_joint = S_matrix * prior
-    joint_sol = np.load(os.getcwd() + "/lab_05/data/SJoint_NaiveBayes.npy")
-    print(f"Joint densities error (sol - mine): {np.abs(joint_sol - S_joint).max()}\n")
 
     S_marginal = vrow(S_joint.sum(0))
 
     # compute posterior probability (joint probability / marginal densities)
     S_post = S_matrix / S_marginal
-    posterior_sol = np.load(os.getcwd() + "/lab_05/data/Posterior_NaiveBayes.npy")
-    print(f"Posterior probability error (sol - mine): {np.abs(posterior_sol - S_post).max()}\n")
+
+    # joint_sol = np.load(PATH + "/data/SJoint_NaiveBayes.npy")
+    # print(f"Joint densities error (sol - mine): {np.abs(joint_sol - S_joint).max()}")
+    # posterior_sol = np.load(PATH + "/data/Posterior_NaiveBayes.npy")
+    # print(f"Posterior probability error (sol - mine): {np.abs(posterior_sol - S_post).max()}\n")
 
     return S_post
 
@@ -68,20 +66,22 @@ def naive_MVG_classifier(D, mean_array, cov_array, prior):
 def naive_MVG_log_classifier(D, mean_array, cov_array, prior):
     # compute log score matrix for each sample of each class
     log_S_matrix = np.log(score_matrix(D, mean_array, cov_array))
+    # print(log_S_matrix.shape)
 
     # compute the log joint distribution (each row of S_matrix (class-conditional probability) * each prior probability)
     log_S_Joint = log_S_matrix + np.log(prior)
-    log_S_Joint_sol = np.load(os.getcwd() + "/lab_05/data/logSJoint_NaiveBayes.npy")
-    print(f"Log joint density error (sol - mine): {np.abs(log_S_Joint_sol - log_S_Joint).max()}\n")
 
     log_S_marginal = vrow(scipy.special.logsumexp(log_S_Joint, axis=0))
-    log_marginal_sol = np.load(os.getcwd() + "/lab_05/data/logMarginal_NaiveBayes.npy")
-    print(f"Log marginal density error (sol - mine): {np.abs(log_marginal_sol - log_S_marginal).max()}\n")
 
     # compute posterior probability (log joint probability - log marginal densities)
     log_S_post = log_S_Joint - log_S_marginal
-    log_posterior_sol = np.load(os.getcwd() + "/lab_05/data/logPosterior_NaiveBayes.npy")
-    print(f"Log posterior probability error (sol - mine): {np.abs(log_posterior_sol - log_S_post).max()}\n")
+
+    # log_S_Joint_sol = np.load(PATH + "/data/logSJoint_NaiveBayes.npy")
+    # print(f"Log joint density error (sol - mine): {np.abs(log_S_Joint_sol - log_S_Joint).max()}")
+    # log_marginal_sol = np.load(PATH + "/data/logMarginal_NaiveBayes.npy")
+    # print(f"Log marginal density error (sol - mine): {np.abs(log_marginal_sol - log_S_marginal).max()}")
+    # log_posterior_sol = np.load(PATH + "/data/logPosterior_NaiveBayes.npy")
+    # print(f"Log posterior probability error (sol - mine): {np.abs(log_posterior_sol - log_S_post).max()}\n")
 
     return np.exp(log_S_post)
 
@@ -117,8 +117,8 @@ def main():
     # evaluate gaussian classifier
     accuracy, error_rate = evaluate_classifier(predictions, LTE)
 
-    print(f"Gaussian model accuracy: {accuracy:.2f}\n")
-    print(f"Gaussian model error rate: {error_rate:.2f}\n")
+    print(f"Naive MVG model accuracy: {accuracy:.2f}%")
+    print(f"Naive MVG model error rate: {error_rate:.2f}%\n")
 
     # compute posterior probabilities for samples
     S_post = naive_MVG_log_classifier(DTE, mean_array, cov_array, prior)
@@ -127,8 +127,8 @@ def main():
     # evaluate log gaussian classifier
     accuracy, error_rate = evaluate_classifier(predictions, LTE)
 
-    print(f"Log gaussian model accuracy: {accuracy:.2f}\n")
-    print(f"Log gaussian model error rate: {error_rate:.2f}\n")
+    print(f"Log naive MVG model accuracy: {accuracy:.2f}%")
+    print(f"Log naive MVG model error rate: {error_rate:.2f}%\n")
 
 
 if __name__ == "__main__":
