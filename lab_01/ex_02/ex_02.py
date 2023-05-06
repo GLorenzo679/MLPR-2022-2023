@@ -2,12 +2,14 @@ import math
 import os
 import sys
 
+PATH = os.path.abspath(os.path.dirname(__file__))
+
 
 def main(argv):
     filepath = os.getcwd()
     bus_list = []
 
-    with open(filepath + "/ex_02/public_transportation.txt", "r") as f:
+    with open(PATH + "/public_transportation.txt", "r") as f:
         lines = f.readlines()
 
         for line in lines:

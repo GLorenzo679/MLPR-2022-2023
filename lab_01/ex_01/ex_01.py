@@ -1,13 +1,14 @@
 import os
 from operator import itemgetter
 
+PATH = os.path.abspath(os.path.dirname(__file__))
+
 
 def main():
-    filepath = os.getcwd()
     athlete_list = []
     country_list = {}
 
-    with open(filepath + "\ex_01\score.txt", "r") as f:
+    with open(PATH + "/score.txt", "r") as f:
         lines = f.readlines()
 
         for line in lines:

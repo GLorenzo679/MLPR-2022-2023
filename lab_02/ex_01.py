@@ -4,6 +4,8 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
+PATH = os.path.abspath(os.path.dirname(__file__))
+
 
 def load(filepath):
     data_matrix = []
@@ -76,9 +78,7 @@ def mean(matrix):
 
 
 def main():
-    filepath = os.getcwd() + "/data/iris.csv"
-
-    matrix, class_array = load(filepath)
+    matrix, class_array = load(PATH + "/data/iris.csv")
 
     plot_hist(matrix, class_array)
     plot_scatter(matrix, class_array)

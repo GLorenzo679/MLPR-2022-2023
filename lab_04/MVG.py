@@ -3,6 +3,8 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
+PATH = os.path.abspath(os.path.dirname(__file__))
+
 
 def vrow(v):
     return v.reshape(1, v.shape[0])
@@ -58,7 +60,7 @@ def main():
     plt.plot(XPlot.ravel(), np.exp(logpdf_GAU_ND_fast(vrow(XPlot), mu, C)))
     plt.show()
 
-    pdfSol = np.load(os.getcwd() + "/lab_04/data/llGAU.npy")
+    pdfSol = np.load(PATH + "/data/llGAU.npy")
     pdfGau = logpdf_GAU_ND(vrow(XPlot), mu, C)
 
     print(np.abs(pdfSol - pdfGau).max())

@@ -1,13 +1,15 @@
 import calendar
 import os
 
+PATH = os.path.abspath(os.path.dirname(__file__))
+
 
 def main():
     filepath = os.getcwd()
     city_count = {}
     month_count = {}
 
-    with open(filepath + "/ex_03/people.txt", "r") as f:
+    with open(PATH + "/people.txt", "r") as f:
         lines = f.readlines()
 
         for line in lines:

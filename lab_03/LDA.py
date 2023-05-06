@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy.linalg
 
+PATH = os.path.abspath(os.path.dirname(__file__))
+
 
 def vcol(v):
     return v.reshape(v.shape[0], 1)
@@ -103,10 +105,9 @@ def LDA2(D, L, m):
 
 
 def main():
-    filepath = os.getcwd() + "/data/iris.csv"
-    test_out_data = np.load(os.getcwd() + "/data/IRIS_LDA_matrix_m2.npy")
+    test_out_data = np.load(PATH + "/data/IRIS_LDA_matrix_m2.npy")
 
-    D, class_array = load(filepath)
+    D, class_array = load(PATH + "/data/iris.csv")
 
     m = 2
 

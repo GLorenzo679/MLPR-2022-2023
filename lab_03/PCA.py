@@ -4,6 +4,8 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
+PATH = os.path.abspath(os.path.dirname(__file__))
+
 
 def load(filepath):
     data_matrix = []
@@ -68,9 +70,7 @@ def PCA(D, m):
 
 
 def main():
-    filepath = os.getcwd() + "/data/iris.csv"
-
-    D, class_array = load(filepath)
+    D, class_array = load(PATH + "/data/iris.csv")
     DP = PCA(D, 2)
     plot_scatter(DP, class_array)
 

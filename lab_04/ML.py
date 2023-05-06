@@ -3,6 +3,8 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
+PATH = os.path.abspath(os.path.dirname(__file__))
+
 
 def vrow(v):
     return v.reshape(1, v.shape[0])
@@ -27,8 +29,8 @@ def loglikelihood(XND, mu_ML, C_ML):
 
 def main():
     XPlot = np.linspace(-8, 12, 1000)
-    X1D = np.load(os.getcwd() + "/lab_04/data/X1D.npy")
-    XND = np.load(os.getcwd() + "/lab_04/data/XND.npy")
+    X1D = np.load(PATH + "/data/X1D.npy")
+    XND = np.load(PATH + "/data/XND.npy")
 
     # N dimensional case
     XNDc = XND - XND.mean(1).reshape(XND.shape[0], 1)
