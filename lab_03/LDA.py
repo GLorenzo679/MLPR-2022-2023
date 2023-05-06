@@ -1,7 +1,8 @@
-import os
 import csv
-import numpy as np
+import os
+
 import matplotlib.pyplot as plt
+import numpy as np
 import scipy.linalg
 
 
@@ -18,19 +19,19 @@ def load(filepath):
     class_array = []
 
     with open(filepath) as csv_file:
-        reader = csv.reader(csv_file, delimiter = ',')
-        
-        for row in reader:
-            data_matrix.append(np.array(row[0:4], dtype = np.float32))
+        reader = csv.reader(csv_file, delimiter=",")
 
-            if(row[4] == "Iris-setosa"):
+        for row in reader:
+            data_matrix.append(np.array(row[0:4], dtype=np.float32))
+
+            if row[4] == "Iris-setosa":
                 class_array.append(0)
-            elif(row[4] == "Iris-versicolor"):
+            elif row[4] == "Iris-versicolor":
                 class_array.append(1)
             else:
                 class_array.append(2)
 
-    return np.vstack(data_matrix).T, np.array(class_array, dtype = np.int32)
+    return np.vstack(data_matrix).T, np.array(class_array, dtype=np.int32)
 
 
 def plot_scatter(matrix, label):
@@ -38,19 +39,14 @@ def plot_scatter(matrix, label):
     M1 = matrix[:, label == 1]
     M2 = matrix[:, label == 2]
 
-    x_labels = {
-        0 : "Sepal length",
-        1 : "Sepal width",
-        2 : "Petal length",
-        3 : "Petal width"
-    }
+    x_labels = {0: "Sepal length", 1: "Sepal width", 2: "Petal length", 3: "Petal width"}
 
     i = 0
     j = 1
 
-    plt.scatter(M0[i, :], M0[j, :], label = "Iris-Setosa")
-    plt.scatter(M1[i, :], M1[j, :], label = "Iris-Versicolor")
-    plt.scatter(M2[i, :], M2[j, :], label = "Iris-Virginica")
+    plt.scatter(M0[i, :], M0[j, :], label="Iris-Setosa")
+    plt.scatter(M1[i, :], M1[j, :], label="Iris-Versicolor")
+    plt.scatter(M2[i, :], M2[j, :], label="Iris-Virginica")
 
     plt.xlabel(x_labels[i])
     plt.ylabel(x_labels[j])
@@ -71,10 +67,10 @@ def SbSw(D, L):
         # calculate mean of each class
         mean_class = D_class.mean(1).reshape(D_class.shape[0], 1)
         # calculate between class covariance matrix
-        SB += D_class.shape[1] * np.dot((mean_class-mean), (mean_class-mean).T)
+        SB += D_class.shape[1] * np.dot((mean_class - mean), (mean_class - mean).T)
         # calculate the within class covariance matrix
         SW += np.dot((D_class - mean_class), (D_class - mean_class).T)
-    
+
     SB /= D.shape[1]
     SW /= D.shape[1]
 
@@ -83,7 +79,7 @@ def SbSw(D, L):
 
 def LDA1(D, L, m):
     # compute convolution matrices
-    SB, SW =  SbSw(D, L)
+    SB, SW = SbSw(D, L)
 
     # solve the generalized eigenvelue problem
     # only possible beacuse Sw is positive defined
@@ -93,12 +89,12 @@ def LDA1(D, L, m):
 
 def LDA2(D, L, m):
     # compute convolution matrices
-    SB, SW =  SbSw(D, L)
+    SB, SW = SbSw(D, L)
 
     # Solving the eigenvalue problem by joint diagonalization
     U, s, _ = np.linalg.svd(SW)
 
-    P1 = np.dot(U * vrow(1.0/(s**0.5)), U.T)
+    P1 = np.dot(U * vrow(1.0 / (s**0.5)), U.T)
     SBTilde = np.dot(P1, np.dot(SB, P1.T))
     U, _, _ = np.linalg.svd(SBTilde)
 
@@ -115,7 +111,7 @@ def main():
     m = 2
 
     W1 = LDA1(D, class_array, m)
-    W2 = LDA2(D, class_array, m)*-1
+    W2 = LDA2(D, class_array, m) * -1
 
 
 if __name__ == "__main__":

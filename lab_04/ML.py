@@ -1,6 +1,7 @@
 import os
-import numpy as np
+
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 def vrow(v):
@@ -15,7 +16,7 @@ def logpdf_GAU_ND_fast(X, mu, C):
     L = np.linalg.inv(C)
     v = (XC * np.dot(L, XC)).sum(0)
 
-    return const -0.5 * logdet -0.5 * v 
+    return const - 0.5 * logdet - 0.5 * v
 
 
 def loglikelihood(XND, mu_ML, C_ML):

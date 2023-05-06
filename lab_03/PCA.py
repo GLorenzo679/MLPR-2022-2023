@@ -1,50 +1,49 @@
-import os
 import csv
-import numpy as np
+import os
+
 import matplotlib.pyplot as plt
+import numpy as np
+
 
 def load(filepath):
     data_matrix = []
     class_array = []
 
     with open(filepath) as csv_file:
-        reader = csv.reader(csv_file, delimiter = ',')
-        
-        for row in reader:
-            data_matrix.append(np.array(row[0:4], dtype = np.float32))
+        reader = csv.reader(csv_file, delimiter=",")
 
-            if(row[4] == "Iris-setosa"):
+        for row in reader:
+            data_matrix.append(np.array(row[0:4], dtype=np.float32))
+
+            if row[4] == "Iris-setosa":
                 class_array.append(0)
-            elif(row[4] == "Iris-versicolor"):
+            elif row[4] == "Iris-versicolor":
                 class_array.append(1)
             else:
                 class_array.append(2)
 
-    return np.vstack(data_matrix).T, np.array(class_array, dtype = np.int32)
+    return np.vstack(data_matrix).T, np.array(class_array, dtype=np.int32)
+
 
 def plot_scatter(matrix, label):
     M0 = matrix[:, label == 0]
     M1 = matrix[:, label == 1]
     M2 = matrix[:, label == 2]
 
-    x_labels = {
-        0 : "Sepal length",
-        1 : "Sepal width",
-        2 : "Petal length",
-        3 : "Petal width"
-    }
+    x_labels = {0: "Sepal length", 1: "Sepal width", 2: "Petal length", 3: "Petal width"}
 
     i = 0
     j = 1
 
-    plt.scatter(M0[i, :], M0[j, :], label = "Iris-Setosa")
-    plt.scatter(M1[i, :], M1[j, :], label = "Iris-Versicolor")
-    plt.scatter(M2[i, :], M2[j, :], label = "Iris-Virginica")
+    plt.scatter(M0[i, :], M0[j, :], label="Iris-Setosa")
+    plt.scatter(M1[i, :], M1[j, :], label="Iris-Versicolor")
+    plt.scatter(M2[i, :], M2[j, :], label="Iris-Virginica")
 
     plt.xlabel(x_labels[i])
     plt.ylabel(x_labels[j])
     plt.legend()
     plt.show()
+
 
 def PCA(D, m):
     # remove the mean from all points
@@ -67,12 +66,14 @@ def PCA(D, m):
 
     return DP
 
+
 def main():
     filepath = os.getcwd() + "/data/iris.csv"
 
     D, class_array = load(filepath)
     DP = PCA(D, 2)
     plot_scatter(DP, class_array)
+
 
 if __name__ == "__main__":
     main()

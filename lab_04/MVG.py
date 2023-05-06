@@ -1,6 +1,7 @@
 import os
-import numpy as np
+
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 def vrow(v):
@@ -21,14 +22,14 @@ def logpdf_GAU_ND_1Sample(x, mu, C):
     # (1, 1000)*[(1000,1000)(1000,1)]
     v = np.dot(xc.T, np.dot(L, xc)).ravel()
 
-    return const -0.5 * logdet_C -0.5 * v 
+    return const - 0.5 * logdet_C - 0.5 * v
 
 
 def logpdf_GAU_ND(X, mu, C):
     Y = []
 
     for i in range(X.shape[1]):
-        Y.append(logpdf_GAU_ND_1Sample(X[:, i:i+1], mu, C))
+        Y.append(logpdf_GAU_ND_1Sample(X[:, i : i + 1], mu, C))
 
     return np.array(Y).ravel()
 
@@ -41,17 +42,18 @@ def logpdf_GAU_ND_fast(X, mu, C):
     L = np.linalg.inv(C)
     v = (XC * np.dot(L, XC)).sum(0)
 
-    return const -0.5 * logdet -0.5 * v 
+    return const - 0.5 * logdet - 0.5 * v
+
 
 def main():
     plt.figure()
-    
+
     # data
     XPlot = np.linspace(-8, 12, 1000)
     # mean (np 1x1 array)
-    mu = np.ones((1,1)) * 1.0
+    mu = np.ones((1, 1)) * 1.0
     # covariance matrix (np 1x1 array)
-    C = np.ones((1,1)) * 2.0
+    C = np.ones((1, 1)) * 2.0
 
     plt.plot(XPlot.ravel(), np.exp(logpdf_GAU_ND_fast(vrow(XPlot), mu, C)))
     plt.show()
