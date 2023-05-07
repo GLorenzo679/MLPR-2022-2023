@@ -2,13 +2,7 @@ import os
 
 import numpy as np
 import scipy
-from utils import (
-    evaluate_classifier,
-    load_iris,
-    logpdf_GAU_ND_fast,
-    split_db_2to1,
-    vrow,
-)
+from utils import evaluate_classifier, load_iris, score_matrix, split_db_2to1, vrow
 
 PATH = os.path.abspath(os.path.dirname(__file__))
 
@@ -31,19 +25,9 @@ def mean_cov_estimate(D, L):
     return np.array(mean_array), np.array(cov_array)
 
 
-def score_matrix(DTV, mean_array, cov_array):
-    S = []
-
-    for i in range(3):
-        fcond = np.exp(logpdf_GAU_ND_fast(DTV, mean_array[i], cov_array[i]))
-        S.append(vrow(fcond))
-
-    return np.vstack(S)
-
-
 def MVG_classifier(D, mean_array, cov_array, prior):
     # compute score matrix for each sample of each class
-    S_matrix = score_matrix(D, mean_array, cov_array)
+    S_matrix = score_matrix(D, mean_array, cov_array, prior.shape[0])
 
     # compute the joint distribution (each row of S_matrix (class-conditional probability) * each prior probability)
     S_joint = S_matrix * prior
@@ -63,7 +47,7 @@ def MVG_classifier(D, mean_array, cov_array, prior):
 
 def MVG_log_classifier(D, mean_array, cov_array, prior):
     # compute log score matrix for each sample of each class
-    log_S_matrix = np.log(score_matrix(D, mean_array, cov_array))
+    log_S_matrix = np.log(score_matrix(D, mean_array, cov_array, prior.shape[0]))
 
     # compute the log joint distribution (each row of S_matrix (class-conditional probability) * each prior probability)
     log_S_Joint = log_S_matrix + np.log(prior)
@@ -103,8 +87,8 @@ def main():
     # evaluate gaussian classifier
     accuracy, error_rate = evaluate_classifier(predictions, LTE)
 
-    print(f"MVG model accuracy: {accuracy:.2f}%")
-    print(f"MVG model error rate: {error_rate:.2f}%\n")
+    print(f"MVG model accuracy: {accuracy:.1f}%")
+    print(f"MVG model error rate: {error_rate:.1f}%\n")
 
     # compute posterior probabilities for samples
     S_post = MVG_log_classifier(DTE, mean_array, cov_array, prior)
@@ -113,8 +97,8 @@ def main():
     # evaluate log gaussian classifier
     accuracy, error_rate = evaluate_classifier(predictions, LTE)
 
-    print(f"Log MVG model accuracy: {accuracy:.2f}%")
-    print(f"Log MVG model error rate: {error_rate:.2f}%\n")
+    print(f"Log MVG model accuracy: {accuracy:.1f}%")
+    print(f"Log MVG model error rate: {error_rate:.1f}%\n")
 
 
 if __name__ == "__main__":

@@ -59,11 +59,15 @@ def logpdf_GAU_ND_fast(X, mu, C):
     return const - 0.5 * logdet - 0.5 * v
 
 
-def score_matrix(DTV, mean_array, cov_array):
+def score_matrix(DTV, mean_array, cov_array, n_label):
     S = []
 
-    for i in range(3):
-        fcond = np.exp(logpdf_GAU_ND_fast(DTV, mean_array[i], cov_array[i]))
+    for i in range(n_label):
+        if cov_array.ndim > 2:
+            fcond = np.exp(logpdf_GAU_ND_fast(DTV, mean_array[i], cov_array[i]))
+        else:
+            fcond = np.exp(logpdf_GAU_ND_fast(DTV, mean_array[i], cov_array))
+
         S.append(vrow(fcond))
 
     return np.vstack(S)
