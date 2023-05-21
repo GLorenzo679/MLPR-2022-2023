@@ -37,7 +37,7 @@ def split_db_2to1(D, L, seed=0):
     return (DTR, LTR), (DTE, LTE)
 
 
-class logRegClass:
+class logRegModel:
     def __init__(self, DTR, LTR, K, l):
         self.DTR = DTR
         self.LTR = LTR
@@ -89,7 +89,7 @@ def main():
         # initialize starting point (dim = dim_W + dim_b)
         x0 = np.zeros(DTR.shape[0] * K + K)
         # initialize logRegClass object
-        log_reg_obj = logRegClass(DTR, LTR, K, l)
+        log_reg_obj = logRegModel(DTR, LTR, K, l)
 
         # minimize objective function
         v, J, info = scipy.optimize.fmin_l_bfgs_b(log_reg_obj.logreg_obj, x0, approx_grad=True)
