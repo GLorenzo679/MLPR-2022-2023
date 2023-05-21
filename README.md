@@ -8,4 +8,6 @@ Laboratories:
 * [LAB 03 - PCA and LDA](lab_03)
 * [LAB 04 - MVG and ML estimate](lab_04)
 * [LAB 05 - Gaussian model](lab_05)
-* [LAB 06 - ](lab_06)
+* [LAB 06 - Discrete classification](lab_06)
+* [LAB 07 - Logistic Regression](lab_07)
+* [LAB 08 - Model evaluation](lab_08)
