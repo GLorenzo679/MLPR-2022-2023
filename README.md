@@ -12,4 +12,4 @@ Laboratories:
 * [LAB 07 - Logistic Regression](lab_07)
 * [LAB 08 - Model evaluation](lab_08)
 * [LAB 09 - SVM](lab_09)
-* [LAB 09 - GMM](lab_10)
+* [LAB 10 - GMM](lab_10)
